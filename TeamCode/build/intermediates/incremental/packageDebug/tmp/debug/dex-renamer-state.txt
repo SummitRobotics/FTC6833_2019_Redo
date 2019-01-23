@@ -1,4 +1,4 @@
-#Wed Jan 23 14:27:26 PST 2019
-base.0=/Users/chaseandclaire/Documents/Robotics/1819/FTC/ftc_app-master/TeamCode/build/intermediates/transforms/dexMerger/debug/0
+#Wed Jan 23 15:33:43 PST 2019
+base.0=/Users/chaseandclaire/Documents/Robotics/1819/FTC/FTC6833_2019_Redo/TeamCode/build/intermediates/transforms/dexMerger/debug/0
 path.0=classes.dex
 renamed.0=classes.dex

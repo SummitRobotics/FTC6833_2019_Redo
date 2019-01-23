@@ -41,19 +41,19 @@ public class POVTeleOp extends OpMode{
         double rightPower;
         double frontLegPower;
         double backLegPower;
-        double armPower;
+        //double armPower;
 
         // Get gamepad inputs
-        double drive = gamepad1.right_trigger - gamepad1.left_trigger;
+        double drive = deadzone(gamepad1.left_trigger) - deadzone(gamepad1.right_trigger);
         drive = expPower(drive);
-        double turn = gamepad1.right_stick_x;
+        double turn = deadzone(gamepad1.left_stick_x);
 
         // Set power variables
         leftPower = Range.clip(drive + turn, -1.0, 1.0);
         rightPower = Range.clip(drive - turn, -1.0, 1.0);
-        frontLegPower = Range.clip(gamepad2.left_stick_y, -1.0, 1.0);
-        backLegPower = Range.clip(gamepad2.right_stick_y, -1.0, 1.0);
-        armPower = Range.clip(gamepad1.left_stick_y, -1.0, 1.0);
+        frontLegPower = Range.clip(deadzone(-gamepad1.left_stick_y), -1.0, 1.0);
+        backLegPower = Range.clip(deadzone(gamepad1.right_stick_y), -1.0, 1.0);
+        //armPower = Range.clip(gamepad1.left_stick_y, -1.0, 1.0);
 
         if (gamepad1.a) {
             robot.frontIntake.setPower(0.9);
@@ -66,10 +66,10 @@ public class POVTeleOp extends OpMode{
             robot.backIntake.setPower(0.0);
         }
 
-        if (gamepad2.a && !centering) {
+        if (gamepad1.left_bumper && !centering) {
             centering = true;
             centerLegs.actionInit(hardwareMap, telemetry);
-        } else if (gamepad2.a) {
+        } else if (gamepad1.left_bumper) {
             centering = false;
             centerLegs.actionEnd();
         }
@@ -79,7 +79,7 @@ public class POVTeleOp extends OpMode{
         robot.leftBackDrive.setPower(leftPower);
         robot.rightFrontDrive.setPower(rightPower);
         robot.rightBackDrive.setPower(rightPower);
-        robot.armMotor.setPower(armPower);
+        //robot.armMotor.setPower(armPower);
 
         if (centering) {
             if (centerLegs.run() != 0) {
@@ -111,6 +111,14 @@ public class POVTeleOp extends OpMode{
     private double expPower(double power) {
         if (power == 0) { return 0; }
         return (power * power) * (Math.abs(power) / power);
+    }
+
+    private double deadzone(double num) {
+        if (num <= 0.07 && num >= -0.7) {
+            return 0;
+        }
+
+        return num;
     }
 
 }
