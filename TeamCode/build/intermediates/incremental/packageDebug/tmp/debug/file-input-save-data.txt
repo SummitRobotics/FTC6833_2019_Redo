@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Jan 23 15:33:44 PST 2019
+#Wed Jan 23 15:43:50 PST 2019
 20.base=/Users/chaseandclaire/Documents/Robotics/1819/FTC/FTC6833_2019_Redo/TeamCode/build/intermediates/assets/debug
 143.base=/Users/chaseandclaire/Documents/Robotics/1819/FTC/FTC6833_2019_Redo/TeamCode/build/intermediates/assets/debug
 237.path=blocks/vuforia_trackables.js

@@ -14,7 +14,7 @@ public class POVTeleOp extends OpMode{
 
     private Hardware robot = new Hardware();
     private ElapsedTime runtime = new ElapsedTime();
-    private LegControl centerLegs = new LegControl(Math.PI, Math.PI, 0.9, 1);
+    private LegControl centerLegs = new LegControl(0, 0, 0.9, 1);
     private boolean centering = false;
 
     @Override
