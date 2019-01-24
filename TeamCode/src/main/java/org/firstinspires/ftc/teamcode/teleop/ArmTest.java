@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.autonomous.actions.LegControl;
 import org.firstinspires.ftc.teamcode.main.Hardware;
 
-@TeleOp(name="LegTest", group="Iterative Opmode")
-public class LegTest extends OpMode{
+@TeleOp(name="ArmTest", group="Iterative Opmode")
+public class ArmTest extends OpMode{
 
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor arm;

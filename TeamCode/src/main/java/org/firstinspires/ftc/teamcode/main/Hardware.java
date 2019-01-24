@@ -31,8 +31,8 @@ public class Hardware {
     public final int DRIVE_COUNTS_PER_RADIAN = (int) -(ROBOT_WIDTH / 2 * DRIVE_COUNTS_PER_INCH);
 
     private final double HEX_CORE_REV_COUNTS = 288;
-    private final double LEG_GEAR_RATIO = 1/1067; // WheelGear / MotorGear
-    public final double LEG_COUNTS_PER_RADIAN = (HD_HEX_REV_COUNTS * LEG_GEAR_RATIO / (2 * Math.PI));
+    private final double LEG_GEAR_RATIO = 1067; // WheelGear / MotorGear
+    public final double LEG_COUNTS_PER_RADIAN = (HD_HEX_REV_COUNTS * LEG_GEAR_RATIO);
 
     // Local opmode hardware map
     private HardwareMap hardwareMap = null;

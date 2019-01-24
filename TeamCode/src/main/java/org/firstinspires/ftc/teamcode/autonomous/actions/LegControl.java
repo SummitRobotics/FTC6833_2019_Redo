@@ -10,6 +10,7 @@ public class LegControl extends CoreAction {
     private double frontSpeed, backSpeed;
     private int frontTicks, backTicks;
     private int nextPos, frontTarget, backTarget;
+    private Telemetry telemetry;
 
 
     public LegControl(double frontPosition, double backPosition, double speed, int nextPos) {
@@ -26,16 +27,19 @@ public class LegControl extends CoreAction {
     public void actionInit(HardwareMap hardwareMap, Telemetry telemetry) {
 
         robot.init(hardwareMap);
+        this.telemetry = telemetry;
 
         // Prepare motors for encoder movement
         frontTarget = frontTicks - robot.frontLeg.getCurrentPosition();
         backTarget = backTicks - robot.backLeg.getCurrentPosition();
 
-        if ((frontTarget > 0 && frontSpeed < 0) || (frontTarget < 0 && frontSpeed > 0)) {
+        if ((frontTarget > robot.frontLeg.getCurrentPosition() && frontSpeed < 0) ||
+                (frontTarget < robot.frontLeg.getCurrentPosition() && frontSpeed > 0)) {
             frontSpeed *= -1;
         }
 
-        if ((backTarget > 0 && backSpeed < 0) || (backTarget < 0 && backSpeed > 0)) {
+        if ((backTarget > robot.backLeg.getCurrentPosition() && backSpeed < 0) ||
+                (backTarget < robot.backLeg.getCurrentPosition() && backSpeed > 0)) {
             backSpeed *= -1;
         }
 
@@ -50,20 +54,25 @@ public class LegControl extends CoreAction {
     @Override
     public int run() {
         // Set motor power until finished
-        if (robot.frontLeg.isBusy() && robot.backLeg.isBusy()) {
-            robot.frontLeg.setPower(frontSpeed);
-            robot.backLeg.setPower(backSpeed);
+        if (robot.frontLeg.isBusy() || robot.backLeg.isBusy()) {
+            if (robot.frontLeg.isBusy()) {
+                robot.frontLeg.setPower(frontSpeed);
+            }
+
+            if (robot.backLeg.isBusy()) {
+                robot.backLeg.setPower(backSpeed);
+            }
+
+            telemetry.addData("LegControl to", "front: (%2f), back: (%2f)", frontTarget, backTarget);
+            telemetry.addData("LegControl at", "front: (%2f), back: (%2f)",
+                    robot.frontLeg.getCurrentPosition(), robot.backLeg.getCurrentPosition());
+            //telemetry.update();
             return 0;
 
-        } else if (robot.frontLeg.isBusy()) {
-            robot.frontLeg.setPower(frontSpeed);
-            return 0;
-
-        } else if (robot.backLeg.isBusy()) {
-            robot.backLeg.setPower(backSpeed);
-            return 0;
         }
 
+        robot.frontLeg.setPower(0);
+        robot.backLeg.setPower(0);
         return nextPos;
     }
 

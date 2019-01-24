@@ -50,11 +50,11 @@ public abstract class CoreAuto extends LinearOpMode{
                 nextAction = path.get(currentAction).run();
 
                 // End the program if runtime exceeds 5 seconds
-                if (runtime.seconds() > 5 && !(path.get(currentAction) instanceof WaitForTime)) {
-                    telemetry.addData("Failed","Next Position: " + path.get(currentAction).nextPos);
-                    telemetry.update();
-                    nextAction = path.get(currentAction).nextPos;
-                }
+//                if (runtime.seconds() > 5 && !(path.get(currentAction) instanceof WaitForTime)) {
+//                    telemetry.addData("Failed","Next Position: " + path.get(currentAction).nextPos);
+//                    telemetry.update();
+//                    nextAction = path.get(currentAction).nextPos;
+//                }
             }
 
             // End current actions
