@@ -41,10 +41,9 @@ public abstract class CoreAuto extends LinearOpMode{
             nextAction = 0;
 
             // Initialize current action
-            path.get(currentAction).actionInit(hardwareMap, telemetry);
+            path.get(currentAction).actionInit(hardwareMap, runtime);
 
             // Continue looping through run method until action completes and doesn't return 0
-            runtime.reset();
             while (nextAction == 0 && opModeIsActive()) {
                 nextAction = path.get(currentAction).run();
             }

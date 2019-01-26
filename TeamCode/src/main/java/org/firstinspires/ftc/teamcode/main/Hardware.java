@@ -18,7 +18,6 @@ public class Hardware {
     public DcMotor armMotor;
     public CRServo frontIntake;
     public CRServo backIntake;
-    public Servo markerDrop;
     public DigitalChannel frontLimit;
     public DigitalChannel backLimit;
 
@@ -58,7 +57,6 @@ public class Hardware {
         armMotor = this.hardwareMap.get(DcMotor.class, "armMotor");
         frontIntake = this.hardwareMap.get(CRServo.class, "frontIntake");
         backIntake = this.hardwareMap.get(CRServo.class, "backIntake");
-        markerDrop = this.hardwareMap.get(Servo.class, "markerDrop");
         frontLimit = hardwareMap.get(DigitalChannel.class, "frontLimit");
         backLimit = hardwareMap.get(DigitalChannel.class, "backLimit");
 

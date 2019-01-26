@@ -2,81 +2,88 @@ package org.firstinspires.ftc.teamcode.autonomous.actions;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // Class to move forward or turn
 public class LegControl extends CoreAction {
 
-    private double frontSpeed, backSpeed;
-    private int frontTicks, backTicks;
-    private int nextPos, frontTarget, backTarget;
-    private Telemetry telemetry;
+    private double frontSpeed, backSpeed, frontTime, backTime, start;
+    private ElapsedTime runtime;
 
 
-    public LegControl(double frontPosition, double backPosition, double speed, int nextPos) {
+    public LegControl(double frontTime, double backTime, double frontSpeed, double backSpeed, int nextPos) {
 
+        this.frontSpeed = frontSpeed;
+        this.backSpeed = backSpeed;
+        this.nextPos = nextPos;
+
+        this.frontTime = frontTime;
+        this.backTime = backTime;
+    }
+
+    public LegControl(double speed, int nextPos) {
         this.frontSpeed = speed;
         this.backSpeed = speed;
         this.nextPos = nextPos;
 
-        this.frontTicks = (int) (frontPosition * robot.LEG_COUNTS_PER_RADIAN);
-        this.backTicks = (int) (backPosition * robot.LEG_COUNTS_PER_RADIAN);
-    }
+        frontTime = -1;
+        backTime = -1;
 
-    @Override
-    public void actionInit(HardwareMap hardwareMap, Telemetry telemetry) {
-
-        robot.init(hardwareMap);
-        this.telemetry = telemetry;
-
-        // Prepare motors for encoder movement
-        frontTarget = frontTicks - robot.frontLeg.getCurrentPosition();
-        backTarget = backTicks - robot.backLeg.getCurrentPosition();
-
-        if ((frontTarget > robot.frontLeg.getCurrentPosition() && frontSpeed < 0) ||
-                (frontTarget < robot.frontLeg.getCurrentPosition() && frontSpeed > 0)) {
+        if (frontSpeed < 0) {
             frontSpeed *= -1;
         }
 
-        if ((backTarget > robot.backLeg.getCurrentPosition() && backSpeed < 0) ||
-                (backTarget < robot.backLeg.getCurrentPosition() && backSpeed > 0)) {
+        if (backSpeed > 0) {
             backSpeed *= -1;
         }
+    }
 
-        robot.frontLeg.setTargetPosition(frontTarget);
-        robot.backLeg.setTargetPosition(backTarget);
-
-        // Turn On RUN_TO_POSITION
-        robot.frontLeg.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.backLeg.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    @Override
+    public void actionInit(HardwareMap hardwareMap, ElapsedTime runtime) {
+        robot.init(hardwareMap);
+        this.runtime = runtime;
+        start = runtime.seconds();
     }
 
     @Override
     public int run() {
         // Set motor power until finished
-        if (robot.frontLeg.isBusy() || robot.backLeg.isBusy()) {
-            if (robot.frontLeg.isBusy()) {
-                robot.frontLeg.setPower(frontSpeed);
-            }
+        if (frontTime >= 0 && backTime >= 0) {
+            if (runtime.seconds() - start < frontTime || runtime.seconds() - start < backTime) {
+                if (runtime.seconds() - start > frontTime) {
+                    frontSpeed = 0;
+                }
 
-            if (robot.backLeg.isBusy()) {
+                if (runtime.seconds() - start > backTime) {
+                    backSpeed = 0;
+                }
+
                 robot.backLeg.setPower(backSpeed);
+                robot.frontLeg.setPower(frontSpeed);
+                return 0;
+
             }
+            return nextPos;
 
-            telemetry.addData("LegControl to", "front: (%2f), back: (%2f)", frontTarget, backTarget);
-            telemetry.addData("LegControl at", "front: (%2f), back: (%2f)",
-                    robot.frontLeg.getCurrentPosition(), robot.backLeg.getCurrentPosition());
-            //telemetry.update();
-            return 0;
+        } else {
+            if (robot.frontLimit.getState() || robot.backLimit.getState()) {
+                if (!robot.frontLimit.getState()) {
+                    frontSpeed = 0;
+                }
 
+                if (!robot.backLimit.getState()) {
+                    backSpeed = 0;
+                }
+
+                robot.frontLeg.setPower(frontSpeed);
+                robot.backLeg.setPower(backSpeed);
+                return 0;
+
+            }
+            return nextPos;
         }
-
-        robot.frontLeg.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backLeg.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        robot.frontLeg.setPower(0);
-        robot.backLeg.setPower(0);
-        return nextPos;
     }
 
     @Override
@@ -85,8 +92,5 @@ public class LegControl extends CoreAction {
         // Set power to 0
         robot.frontLeg.setPower(0);
         robot.backLeg.setPower(0);
-
-        robot.frontLeg.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backLeg.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

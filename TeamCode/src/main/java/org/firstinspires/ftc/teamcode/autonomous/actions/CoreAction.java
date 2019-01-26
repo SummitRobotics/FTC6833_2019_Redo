@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.main.Hardware;
 
@@ -13,9 +14,9 @@ public abstract class CoreAction {
     /**
      * Method to run once at start of action use
      * @param hardwareMap For using hardware within actions
-     * @param telemetry For updating telemetry within actions
+     * @param runtime For using runtime within actions
      */
-    public abstract void actionInit(HardwareMap hardwareMap, Telemetry telemetry);
+    public abstract void actionInit(HardwareMap hardwareMap, ElapsedTime runtime);
 
     /**
      * Method to be called until action is complete

@@ -6,25 +6,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class WaitForTime extends CoreAction {
 
-    long time;
+    double start, time;
     int nextPos;
-    ElapsedTime runtime = new ElapsedTime();
+    ElapsedTime runtime;
 
     public WaitForTime(double time, int nextPos) {
 
-        this.time = (long) time;
+        this.time = time;
         this.nextPos = nextPos;
     }
 
     @Override
-    public void actionInit(HardwareMap hardwareMap, Telemetry telemetry) {
-        runtime.reset();
+    public void actionInit(HardwareMap hardwareMap, ElapsedTime runtime) {
+        start = runtime.seconds();
+        this.runtime = runtime;
     }
 
     @Override
     public int run() {
 
-        if (runtime.seconds() > time) {
+        if (runtime.seconds() - start > time) {
             return nextPos;
         }
 

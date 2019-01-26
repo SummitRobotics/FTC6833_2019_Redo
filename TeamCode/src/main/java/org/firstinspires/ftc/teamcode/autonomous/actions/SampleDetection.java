@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -14,7 +16,6 @@ public class SampleDetection extends CoreAction {
 
     // Variables for action
     private int nextPos1, nextPos2, nextPos3;
-    private Telemetry telemetry;
     private HardwareMap hardwareMap;
 
     // Variables for Vuforia and Tensor Flow
@@ -35,18 +36,14 @@ public class SampleDetection extends CoreAction {
     }
 
     @Override
-    public void actionInit(HardwareMap hardwareMap, Telemetry telemetry) {
+    public void actionInit(HardwareMap hardwareMap, ElapsedTime runtime) {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
-        this.telemetry = telemetry;
         this.hardwareMap = hardwareMap;
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-            telemetry.update();
         }
 
         tfod.activate();
@@ -59,8 +56,6 @@ public class SampleDetection extends CoreAction {
             // the last time that call was made.
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
             if (updatedRecognitions != null) {
-                telemetry.addData("# Object Detected", updatedRecognitions.size());
-                telemetry.update();
 
                 // Check if 3 minerals have been detected
                 if (updatedRecognitions.size() == 3) {
@@ -83,16 +78,10 @@ public class SampleDetection extends CoreAction {
                     if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
 
                         if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                            telemetry.addData("Side: ", "Left");
-                            telemetry.update();
                             return nextPos1; //Left
                         } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                            telemetry.addData("Side: ", "Right");
-                            telemetry.update();
                             return nextPos3; //Right
                         } else {
-                            telemetry.addData("Side: ", "Center");
-                            telemetry.update();
                             return nextPos2; //Center
                         }
                     }

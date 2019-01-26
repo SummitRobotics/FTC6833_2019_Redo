@@ -13,9 +13,6 @@ public class POVTeleOp extends OpMode{
 
     private Hardware robot = new Hardware();
     private ElapsedTime runtime = new ElapsedTime();
-    private LegControl centerLegs = new LegControl(-0.0125, 0.0125, 0.9, 1);
-    private boolean centering = false;
-    private boolean released = true;
 
     @Override
     public void init() {
@@ -44,7 +41,7 @@ public class POVTeleOp extends OpMode{
         double armPower;
 
         // Get gamepad inputs
-        double drive = deadzone(gamepad1.right_trigger) - deadzone(gamepad1.left_trigger);
+        double drive = gamepad1.right_trigger - gamepad1.left_trigger;
         drive = expPower(drive);
         double turn = deadzone(gamepad1.left_stick_x);
 
@@ -52,7 +49,7 @@ public class POVTeleOp extends OpMode{
         leftPower = Range.clip(drive + turn, -1.0, 1.0);
         rightPower = Range.clip(drive - turn, -1.0, 1.0);
         frontLegPower = Range.clip(deadzone(-gamepad1.right_stick_y), -1.0, 1.0);
-        armPower = Range.clip(gamepad2.left_stick_y, -1.0, 1.0);
+        armPower = Range.clip(deadzone(gamepad2.left_stick_y), -1.0, 1.0);
 
         if (gamepad1.dpad_up) {
             backLegPower = 1;
@@ -81,21 +78,6 @@ public class POVTeleOp extends OpMode{
             robot.backIntake.setPower(0.0);
         }
 
-        if (gamepad1.left_bumper && released) {
-            released = false;
-            if (centering) {
-                centerLegs.actionEnd();
-                centering = false;
-            } else {
-                centerLegs.actionInit(hardwareMap, telemetry);
-                centering = true;
-            }
-        }
-
-        if (!gamepad1.left_bumper) {
-            released = true;
-        }
-
         // Send calculated power to hardware
         robot.leftFrontDrive.setPower(leftPower);
         robot.leftBackDrive.setPower(leftPower);
@@ -103,19 +85,12 @@ public class POVTeleOp extends OpMode{
         robot.rightBackDrive.setPower(rightPower);
         robot.armMotor.setPower(armPower);
 
-        if (centering) {
-            if (centerLegs.run() != 0) {
-                centering = false;
-                centerLegs.actionEnd();
-            }
-        } else {
-            robot.frontLeg.setPower(frontLegPower);
-            robot.backLeg.setPower(backLegPower);
-        }
+        robot.frontLeg.setPower(frontLegPower);
+        robot.backLeg.setPower(backLegPower);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Motors", "drive (%.2f), turn (%.2f)", drive, turn);
     }
 
     @Override
@@ -136,7 +111,7 @@ public class POVTeleOp extends OpMode{
     }
 
     private double deadzone(double num) {
-        if (num <= 0.07 && num >= -0.7) {
+        if (num <= 0.13 && num >= -0.13) {
             return 0;
         }
 

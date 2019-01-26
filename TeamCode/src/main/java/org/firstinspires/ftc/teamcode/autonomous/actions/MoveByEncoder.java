@@ -2,86 +2,74 @@ package org.firstinspires.ftc.teamcode.autonomous.actions;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // Class to move forward or turn
 public class MoveByEncoder extends CoreAction {
 
-    private double leftSpeed, rightSpeed;
-    private int leftTicks, rightTicks;
+    private double leftSpeed, rightSpeed, leftTime, rightTime, start;
     private int nextPos, leftTarget, rightTarget;
+    private ElapsedTime runtime;
 
-    public MoveByEncoder(double distance, double speed, int nextPos) {
+    public MoveByEncoder(double time, double speed, int nextPos) {
 
         this.leftSpeed = speed;
         this.rightSpeed = speed;
         this.nextPos = nextPos;
-        this.leftTicks = (int) (distance * robot.DRIVE_COUNTS_PER_INCH);
-        this.rightTicks = (int) (distance * robot.DRIVE_COUNTS_PER_INCH);
+        this.leftTime = time;
+        this.rightTime = time;
     }
 
-    public MoveByEncoder(double leftDistance, double rightDistance, double speed, int nextPos) {
+    public MoveByEncoder(double leftTime, double rightTime, double speed, int nextPos) {
 
-        if (leftDistance > rightDistance) {
+        if (leftTime > rightTime) {
             this.leftSpeed = speed;
-            this.rightSpeed = speed * (rightDistance / leftDistance);
+            this.rightSpeed = speed * (rightTime / leftTime);
         } else {
             this.rightSpeed = speed;
-            this.leftSpeed = speed * (leftDistance / rightDistance);
+            this.leftSpeed = speed * (leftTime / rightTime);
         }
 
         this.nextPos = nextPos;
-        this.leftTicks = (int) (leftDistance * robot.DRIVE_COUNTS_PER_INCH);
-        this.rightTicks = (int) (rightDistance * robot.DRIVE_COUNTS_PER_INCH);
+        this.leftTime = leftTime;
+        this.rightTime = rightTime;
     }
 
-    public MoveByEncoder(double leftDistance, double rightDistance, double leftSpeed, double rightSpeed, int nextPos) {
+    public MoveByEncoder(double leftTime, double rightTime, double leftSpeed, double rightSpeed, int nextPos) {
 
         this.leftSpeed = leftSpeed;
         this.rightSpeed = rightSpeed;
         this.nextPos = nextPos;
-        this.leftTicks = (int) (leftDistance * robot.DRIVE_COUNTS_PER_INCH);
-        this.rightTicks = (int) (rightDistance * robot.DRIVE_COUNTS_PER_INCH);
+        this.leftTime = leftTime;
+        this.rightTime = rightTime;
     }
 
     @Override
-    public void actionInit(HardwareMap hardwareMap, Telemetry telemetry) {
+    public void actionInit(HardwareMap hardwareMap, ElapsedTime runtime) {
 
         robot.init(hardwareMap);
-
-        // Prepare motors for encoder movement
-        leftTarget = robot.leftFrontDrive.getCurrentPosition() + leftTicks;
-        rightTarget = robot.rightFrontDrive.getCurrentPosition() + rightTicks;
-
-        robot.leftFrontDrive.setTargetPosition(leftTarget);
-        robot.rightFrontDrive.setTargetPosition(rightTarget);
-
-        // Turn On RUN_TO_POSITION
-        robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.runtime = runtime;
+        this.start = runtime.seconds();
     }
 
     @Override
     public int run() {
         // Set motor power until finished
-        if (robot.leftFrontDrive.isBusy() && robot.rightFrontDrive.isBusy()) {
-            robot.leftFrontDrive.setPower(leftSpeed);
-            robot.leftBackDrive.setPower(leftSpeed);
-            robot.rightFrontDrive.setPower(rightSpeed);
-            robot.rightBackDrive.setPower(rightSpeed);
+        if (runtime.seconds() - start < leftTime || runtime.seconds() - start < rightTime) {
+            if (runtime.seconds() - start < leftTime) {
+                robot.leftFrontDrive.setPower(leftSpeed);
+                robot.leftBackDrive.setPower(leftSpeed);
+            }
+
+            if (runtime.seconds() - start < rightTime) {
+                robot.rightFrontDrive.setPower(rightSpeed);
+                robot.rightBackDrive.setPower(rightSpeed);
+            }
             return 0;
 
-        } else if (robot.leftFrontDrive.isBusy()) {
-            robot.leftFrontDrive.setPower(leftSpeed);
-            robot.leftBackDrive.setPower(leftSpeed);
-            return 0;
-
-        } else if (robot.rightFrontDrive.isBusy()) {
-            robot.rightFrontDrive.setPower(rightSpeed);
-            robot.rightBackDrive.setPower(rightSpeed);
-            return 0;
         }
-
         return nextPos;
     }
 
