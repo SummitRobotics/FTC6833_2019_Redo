@@ -71,6 +71,9 @@ public class LegControl extends CoreAction {
 
         }
 
+        robot.frontLeg.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backLeg.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         robot.frontLeg.setPower(0);
         robot.backLeg.setPower(0);
         return nextPos;

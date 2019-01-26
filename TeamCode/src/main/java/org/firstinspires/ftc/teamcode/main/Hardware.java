@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.main;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -17,6 +19,8 @@ public class Hardware {
     public CRServo frontIntake;
     public CRServo backIntake;
     public Servo markerDrop;
+    public DigitalChannel frontLimit;
+    public DigitalChannel backLimit;
 
     // Prepare variables for encoder use
     // http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
@@ -55,13 +59,19 @@ public class Hardware {
         frontIntake = this.hardwareMap.get(CRServo.class, "frontIntake");
         backIntake = this.hardwareMap.get(CRServo.class, "backIntake");
         markerDrop = this.hardwareMap.get(Servo.class, "markerDrop");
+        frontLimit = hardwareMap.get(DigitalChannel.class, "frontLimit");
+        backLimit = hardwareMap.get(DigitalChannel.class, "backLimit");
+
 
         // Reverse the motor that runs backwards, set servo positions.
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeg.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeg.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLimit.setMode(DigitalChannel.Mode.INPUT);
+        backLimit.setMode(DigitalChannel.Mode.INPUT);
     }
 }

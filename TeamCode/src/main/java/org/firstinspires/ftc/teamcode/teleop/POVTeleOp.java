@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.teamcode.autonomous.actions.LegControl;
 import org.firstinspires.ftc.teamcode.main.Hardware;
 
@@ -16,6 +15,7 @@ public class POVTeleOp extends OpMode{
     private ElapsedTime runtime = new ElapsedTime();
     private LegControl centerLegs = new LegControl(-0.0125, 0.0125, 0.9, 1);
     private boolean centering = false;
+    private boolean released = true;
 
     @Override
     public void init() {
@@ -41,37 +41,59 @@ public class POVTeleOp extends OpMode{
         double rightPower;
         double frontLegPower;
         double backLegPower;
-        //double armPower;
+        double armPower;
 
         // Get gamepad inputs
-        double drive = deadzone(gamepad1.left_trigger) - deadzone(gamepad1.right_trigger);
+        double drive = deadzone(gamepad1.right_trigger) - deadzone(gamepad1.left_trigger);
         drive = expPower(drive);
         double turn = deadzone(gamepad1.left_stick_x);
 
         // Set power variables
         leftPower = Range.clip(drive + turn, -1.0, 1.0);
         rightPower = Range.clip(drive - turn, -1.0, 1.0);
-        frontLegPower = Range.clip(deadzone(-gamepad1.left_stick_y), -1.0, 1.0);
-        backLegPower = Range.clip(deadzone(gamepad1.right_stick_y), -1.0, 1.0);
-        //armPower = Range.clip(gamepad1.left_stick_y, -1.0, 1.0);
+        frontLegPower = Range.clip(deadzone(-gamepad1.right_stick_y), -1.0, 1.0);
+        armPower = Range.clip(gamepad2.left_stick_y, -1.0, 1.0);
 
-        if (gamepad1.a) {
-            robot.frontIntake.setPower(0.9);
-            robot.backIntake.setPower(-0.9);
-        } else if (gamepad1.b) {
+        if (gamepad1.dpad_up) {
+            backLegPower = 1;
+        } else if (gamepad1.dpad_down) {
+            backLegPower = -1;
+        } else {
+            backLegPower = 0;
+        }
+
+        if (!robot.frontLimit.getState() && frontLegPower >= 0) {
+            frontLegPower = 0;
+        }
+
+        if (!robot.backLimit.getState() && backLegPower <= 0) {
+            backLegPower = 0;
+        }
+
+        if (gamepad2.a) {
             robot.frontIntake.setPower(-0.9);
             robot.backIntake.setPower(0.9);
+        } else if (gamepad2.b) {
+            robot.frontIntake.setPower(0.9);
+            robot.backIntake.setPower(-0.9);
         } else {
             robot.frontIntake.setPower(0.0);
             robot.backIntake.setPower(0.0);
         }
 
-        if (gamepad1.left_bumper && !centering) {
-            centering = true;
-            centerLegs.actionInit(hardwareMap, telemetry);
-        } else if (gamepad1.left_bumper) {
-            centering = false;
-            centerLegs.actionEnd();
+        if (gamepad1.left_bumper && released) {
+            released = false;
+            if (centering) {
+                centerLegs.actionEnd();
+                centering = false;
+            } else {
+                centerLegs.actionInit(hardwareMap, telemetry);
+                centering = true;
+            }
+        }
+
+        if (!gamepad1.left_bumper) {
+            released = true;
         }
 
         // Send calculated power to hardware
@@ -79,7 +101,7 @@ public class POVTeleOp extends OpMode{
         robot.leftBackDrive.setPower(leftPower);
         robot.rightFrontDrive.setPower(rightPower);
         robot.rightBackDrive.setPower(rightPower);
-        //robot.armMotor.setPower(armPower);
+        robot.armMotor.setPower(armPower);
 
         if (centering) {
             if (centerLegs.run() != 0) {

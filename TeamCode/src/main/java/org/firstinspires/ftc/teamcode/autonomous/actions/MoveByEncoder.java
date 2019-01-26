@@ -11,9 +11,6 @@ public class MoveByEncoder extends CoreAction {
     private int leftTicks, rightTicks;
     private int nextPos, leftTarget, rightTarget;
 
-    // Direction variables
-    public static final int FORWARD = 1,  TURN = -1;
-
     public MoveByEncoder(double distance, double speed, int nextPos) {
 
         this.leftSpeed = speed;
@@ -54,10 +51,10 @@ public class MoveByEncoder extends CoreAction {
 
         // Prepare motors for encoder movement
         leftTarget = robot.leftFrontDrive.getCurrentPosition() + leftTicks;
-        rightTarget = robot.rightBackDrive.getCurrentPosition() + rightTicks;
+        rightTarget = robot.rightFrontDrive.getCurrentPosition() + rightTicks;
 
         robot.leftFrontDrive.setTargetPosition(leftTarget);
-        robot.rightBackDrive.setTargetPosition(rightTarget);
+        robot.rightFrontDrive.setTargetPosition(rightTarget);
 
         // Turn On RUN_TO_POSITION
         robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
