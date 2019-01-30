@@ -17,6 +17,8 @@ public class SampleDetection extends CoreAction {
     // Variables for action
     private int nextPos1, nextPos2, nextPos3;
     private HardwareMap hardwareMap;
+    private ElapsedTime runtime;
+    private double start;
 
     // Variables for Vuforia and Tensor Flow
     private static final String VUFORIA_KEY = "AT1C2Ar/////AAABmfar9R+GH0MImzCa8UF4lUZ8LgjTo9mRlnRVKWMQiuxY/ZtbqSk4lG/4py3aMDqB0hP1FGC9EzgF2wmcVWVtl3hyTngl17UAeBJaROQuvCuBI4BX+PzqZGuvU50uzGRpNAmRs+dbUtOlxgQTn7CAhvMvVPSu30KbWGAVxjS9FoWIm76KsTmO4sJ16usgbwgb+Y6Rj2NMhgYa3Dd+z9z8nIt5dvay8M4/XgtBNfEEf4eH+w0Mbs9tQGc9pSAe3VG7m/T69LmD1Thmd641EflttJ4geP7TbI9q7e2LPhGwLLE+1FaHeaSa2OdCbzFcITVhHtop+F1qNWJbKWpWKHwUEbeAf2do9lTWV0PjoUTcE44y";
@@ -39,6 +41,8 @@ public class SampleDetection extends CoreAction {
     public void actionInit(HardwareMap hardwareMap, ElapsedTime runtime) {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
+        this.runtime = runtime;
+        this.start = runtime.seconds();
         initVuforia();
         this.hardwareMap = hardwareMap;
 
@@ -89,6 +93,10 @@ public class SampleDetection extends CoreAction {
             }
         }
 
+        if (runtime.seconds() - start > 5) {
+            return nextPos;
+        }
+
         // Return 0 if action is still in progress
         return 0;
     }
@@ -111,7 +119,7 @@ public class SampleDetection extends CoreAction {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = CameraDirection.BACK;
+        parameters.cameraDirection = CameraDirection.FRONT;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);

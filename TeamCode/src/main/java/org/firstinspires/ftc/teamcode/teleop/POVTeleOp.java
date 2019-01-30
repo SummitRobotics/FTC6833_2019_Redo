@@ -39,6 +39,8 @@ public class POVTeleOp extends OpMode{
         double frontLegPower;
         double backLegPower;
         double armPower;
+        int leftLegEncoderPos;
+        int rightLegEncoderPos;
 
         // Get gamepad inputs
         double drive = gamepad1.right_trigger - gamepad1.left_trigger;
@@ -66,6 +68,19 @@ public class POVTeleOp extends OpMode{
         if (!robot.backLimit.getState() && backLegPower <= 0) {
             backLegPower = 0;
         }
+
+
+        /*
+        //zero is a placeholder integer until the correct value can be calculated
+
+        if (robot.backLeg.getCurrentPosition() > 0 && backLegPower >= 0) {
+            backLegPower = 0;
+        }
+
+        if (robot.frontLeg.getCurrentPosition() < 0 && frontLegPower <= 0) {
+            frontLegPower = 0;
+        }
+        */
 
         if (gamepad2.a) {
             robot.frontIntake.setPower(-0.9);
