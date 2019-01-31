@@ -1,14 +1,13 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.main.Hardware;
 
 public class IntakeControl extends CoreAction {
 
-    int power;
+    private int power;
 
     public IntakeControl(int power, int nextPos) {
 
@@ -17,8 +16,10 @@ public class IntakeControl extends CoreAction {
     }
 
     @Override
-    public void actionInit(HardwareMap hardwareMap, ElapsedTime runtime) {
-        robot.init(hardwareMap);
+    public void actionInit(Hardware robot, ElapsedTime runtime, Telemetry telemetry) {
+        this.robot = robot;
+        this.runtime = runtime;
+        this.telemetry = telemetry;
     }
 
     @Override

@@ -1,89 +1,73 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.main.Hardware;
 
 // Class to move forward or turn
 public class LegControl extends CoreAction {
 
-    private double frontSpeed, backSpeed, frontTime, backTime, start;
-    private ElapsedTime runtime;
+    private double frontSpeed, backSpeed, frontPos, backPos;
 
 
-    public LegControl(double frontTime, double backTime, double frontSpeed, double backSpeed, int nextPos) {
+    public LegControl(double frontPos, double backPos, double frontSpeed, double backSpeed, int nextPos) {
 
         this.frontSpeed = frontSpeed;
         this.backSpeed = backSpeed;
         this.nextPos = nextPos;
 
-        this.frontTime = frontTime;
-        this.backTime = backTime;
-    }
-
-    public LegControl(double speed, int nextPos) {
-        this.frontSpeed = speed;
-        this.backSpeed = speed;
-        this.nextPos = nextPos;
-
-        frontTime = -1;
-        backTime = -1;
-
-        if (frontSpeed < 0) {
-            frontSpeed *= -1;
-        }
-
-        if (backSpeed > 0) {
-            backSpeed *= -1;
-        }
+        this.frontPos = frontPos;
+        this.backPos = backPos;
     }
 
     @Override
-    public void actionInit(HardwareMap hardwareMap, ElapsedTime runtime) {
-        robot.init(hardwareMap);
+    public void actionInit(Hardware robot, ElapsedTime runtime, Telemetry telemetry) {
+        this.robot = robot;
         this.runtime = runtime;
-        start = runtime.seconds();
+        this.telemetry = telemetry;
+
+        // Prepare motors for encoder movement
+        int frontTarget = (int)(frontPos * robot.LEG_COUNTS_PER_ROT) - robot.frontLeg.getCurrentPosition();
+        int backTarget  = (int)(backPos  * robot.LEG_COUNTS_PER_ROT) - robot.backLeg .getCurrentPosition();
+
+        if ((frontTarget > robot.frontLeg.getCurrentPosition() && frontSpeed < 0) ||
+                (frontTarget < robot.frontLeg.getCurrentPosition() && frontSpeed > 0)) {
+            frontSpeed *= -1;
+        }
+
+        if ((backTarget > robot.backLeg.getCurrentPosition() && backSpeed < 0) ||
+                (backTarget < robot.backLeg.getCurrentPosition() && backSpeed > 0)) {
+            backSpeed *= -1;
+        }
+
+        // Turn On RUN_TO_POSITION
+        robot.frontLeg.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backLeg.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.frontLeg.setTargetPosition(frontTarget);
+        robot.backLeg.setTargetPosition(backTarget);
     }
 
     @Override
     public int run() {
         // Set motor power until finished
-        if (frontTime >= 0 && backTime >= 0) {
-            if (runtime.seconds() - start < frontTime || runtime.seconds() - start < backTime) {
-                if (runtime.seconds() - start > frontTime) {
-                    frontSpeed = 0;
-                }
-
-                if (runtime.seconds() - start > backTime) {
-                    backSpeed = 0;
-                }
-
-                robot.backLeg.setPower(backSpeed);
-                robot.frontLeg.setPower(frontSpeed);
-                return 0;
-
+        if ((robot.frontLeg.isBusy() || robot.backLeg.isBusy())
+                && (!robot.atLimit(robot.frontLimit) || !robot.atLimit(robot.backLimit))) {
+            if (!robot.frontLeg.isBusy() || robot.atLimit(robot.frontLimit)) {
+                frontSpeed = 0;
             }
-            return nextPos;
 
-        } else {
-            if (robot.frontLimit.getState() || robot.backLimit.getState()) {
-                if (!robot.frontLimit.getState()) {
-                    frontSpeed = 0;
-                }
-
-                if (!robot.backLimit.getState()) {
-                    backSpeed = 0;
-                }
-
-                robot.frontLeg.setPower(frontSpeed);
-                robot.backLeg.setPower(backSpeed);
-                return 0;
-
+            if (!robot.backLeg.isBusy() || robot.atLimit(robot.backLimit)) {
+                backSpeed = 0;
             }
-            return nextPos;
+
+            robot.backLeg.setPower(backSpeed);
+            robot.frontLeg.setPower(frontSpeed);
+            return 0;
+
         }
+        return nextPos;
     }
 
     @Override
@@ -92,5 +76,8 @@ public class LegControl extends CoreAction {
         // Set power to 0
         robot.frontLeg.setPower(0);
         robot.backLeg.setPower(0);
+
+        robot.frontLeg.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backLeg.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

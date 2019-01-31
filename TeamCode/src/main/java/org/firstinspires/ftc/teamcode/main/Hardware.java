@@ -24,21 +24,21 @@ public class Hardware {
     // Prepare variables for encoder use
     // http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
     private final int HD_HEX_REV_COUNTS = 1120; // 1120 for 40:1, 560 for 20:1
-    private final double DRIVE_GEAR_RATIO = 15.0/26.0; // WheelGear / MotorGear
-    private final double WHEEL_CIRCUMFERENCE = 3.543 * Math.PI;
-    public final double ROBOT_WIDTH = 13;
+    private final double DRIVE_GEAR_RATIO = 15.0/20.0; // WheelGear / MotorGear
+    private final double WHEEL_CIRCUMFERENCE = 3.5 * Math.PI;
+    public final double ROBOT_WIDTH = 17;
 
     public final int DRIVE_COUNTS_PER_INCH = (int) (HD_HEX_REV_COUNTS * DRIVE_GEAR_RATIO /
             WHEEL_CIRCUMFERENCE);
 
-    public final int DRIVE_COUNTS_PER_RADIAN = (int) -(ROBOT_WIDTH / 2 * DRIVE_COUNTS_PER_INCH);
+    public final int DRIVE_COUNTS_PER_ROT = (int) -(ROBOT_WIDTH * Math.PI  * DRIVE_COUNTS_PER_INCH);
 
     private final double HEX_CORE_REV_COUNTS = 288;
-    private final double LEG_GEAR_RATIO = 1067; // WheelGear / MotorGear
-    public final double LEG_COUNTS_PER_RADIAN = (HD_HEX_REV_COUNTS * LEG_GEAR_RATIO);
+    private final double LEG_GEAR_RATIO = (16.0 * 48.0) / 30.0;
+    public final double LEG_COUNTS_PER_ROT = (HD_HEX_REV_COUNTS * LEG_GEAR_RATIO);
 
     // Local opmode hardware map
-    private HardwareMap hardwareMap = null;
+    public HardwareMap hardwareMap = null;
 
     // Constructor
     public Hardware() {}
@@ -71,5 +71,9 @@ public class Hardware {
         backLeg.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLimit.setMode(DigitalChannel.Mode.INPUT);
         backLimit.setMode(DigitalChannel.Mode.INPUT);
+    }
+
+    public boolean atLimit(DigitalChannel limit) {
+        return !limit.getState();
     }
 }

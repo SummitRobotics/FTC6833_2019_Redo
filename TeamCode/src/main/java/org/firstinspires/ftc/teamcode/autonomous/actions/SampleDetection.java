@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -10,14 +8,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.main.Hardware;
 
 // Class to use phone camera to detect gold mineral
 public class SampleDetection extends CoreAction {
 
     // Variables for action
     private int nextPos1, nextPos2, nextPos3;
-    private HardwareMap hardwareMap;
-    private ElapsedTime runtime;
     private double start;
 
     // Variables for Vuforia and Tensor Flow
@@ -29,22 +26,22 @@ public class SampleDetection extends CoreAction {
     private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
 
-    public SampleDetection(int nextPos1, int nextPos2, int nextPos3, int defaultPos) {
+    public SampleDetection(int nextPos1, int nextPos2, int nextPos3) {
 
         this.nextPos1 = nextPos1;
         this.nextPos2 = nextPos2;
         this.nextPos3 = nextPos3;
-        this.nextPos = defaultPos;
+        this.nextPos =  nextPos2;
     }
 
     @Override
-    public void actionInit(HardwareMap hardwareMap, ElapsedTime runtime) {
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
+    public void actionInit(Hardware robot, ElapsedTime runtime, Telemetry telemetry) {
+        this.robot = robot;
         this.runtime = runtime;
+        this.telemetry = telemetry;
         this.start = runtime.seconds();
+
         initVuforia();
-        this.hardwareMap = hardwareMap;
 
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -131,8 +128,8 @@ public class SampleDetection extends CoreAction {
      * Initialize the Tensor Flow Object Detection engine.
      */
     private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int tfodMonitorViewId = robot.hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", robot.hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);

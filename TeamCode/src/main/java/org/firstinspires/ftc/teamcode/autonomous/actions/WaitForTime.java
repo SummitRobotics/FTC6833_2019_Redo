@@ -1,14 +1,13 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.main.Hardware;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class WaitForTime extends CoreAction {
 
-    double start, time;
-    int nextPos;
-    ElapsedTime runtime;
+    private double start, time;
+    private int nextPos;
 
     public WaitForTime(double time, int nextPos) {
 
@@ -17,9 +16,11 @@ public class WaitForTime extends CoreAction {
     }
 
     @Override
-    public void actionInit(HardwareMap hardwareMap, ElapsedTime runtime) {
-        start = runtime.seconds();
+    public void actionInit(Hardware robot, ElapsedTime runtime, Telemetry telemetry) {
+        this.robot = robot;
         this.runtime = runtime;
+        this.telemetry = telemetry;
+        this.start = runtime.seconds();
     }
 
     @Override

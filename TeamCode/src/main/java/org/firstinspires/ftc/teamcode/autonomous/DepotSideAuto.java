@@ -23,7 +23,7 @@ public class DepotSideAuto extends CoreAuto {
         path.add(new MoveByEncoder(0.5, 0.3, 1));
         path.add(new LegControl(0, 1.8, 0, -1, 1));
         path.add(new WaitForTime(0.5, 1));
-        path.add(new SampleDetection(1, 18, 28, 18));
+        path.add(new SampleDetection(1, 18, 28));
 
         // Left path
         path.add(new LegControl(0, 2, 0, 1, 1));

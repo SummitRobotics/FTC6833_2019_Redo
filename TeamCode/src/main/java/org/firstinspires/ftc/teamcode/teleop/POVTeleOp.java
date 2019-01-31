@@ -13,6 +13,9 @@ public class POVTeleOp extends OpMode{
 
     private Hardware robot = new Hardware();
     private ElapsedTime runtime = new ElapsedTime();
+    private LegControl centerLegs = new LegControl(0, 0, 1, 1, 1);
+    private boolean centering = false;
+    private boolean released = true;
 
     @Override
     public void init() {
@@ -39,8 +42,6 @@ public class POVTeleOp extends OpMode{
         double frontLegPower;
         double backLegPower;
         double armPower;
-        int leftLegEncoderPos;
-        int rightLegEncoderPos;
 
         // Get gamepad inputs
         double drive = gamepad1.right_trigger - gamepad1.left_trigger;
@@ -61,26 +62,38 @@ public class POVTeleOp extends OpMode{
             backLegPower = 0;
         }
 
-        if (!robot.frontLimit.getState() && frontLegPower >= 0) {
+        if (robot.atLimit(robot.frontLimit) && frontLegPower >= 0) {
             frontLegPower = 0;
         }
 
-        if (!robot.backLimit.getState() && backLegPower <= 0) {
+        if (robot.atLimit(robot.backLimit) && backLegPower <= 0) {
             backLegPower = 0;
         }
 
-
-        /*
         //zero is a placeholder integer until the correct value can be calculated
 
-        if (robot.backLeg.getCurrentPosition() > 0 && backLegPower >= 0) {
-            backLegPower = 0;
+//        if (robot.backLeg.getCurrentPosition() > 0 && backLegPower >= 0) {
+//            backLegPower = 0;
+//        }
+//
+//        if (robot.frontLeg.getCurrentPosition() < 0 && frontLegPower <= 0) {
+//            frontLegPower = 0;
+//        }
+
+        if (gamepad1.left_bumper && released) {
+            released = false;
+            if (centering) {
+                centerLegs.actionEnd();
+                centering = false;
+            } else {
+                centerLegs.actionInit(robot, runtime, telemetry);
+                centering = true;
+            }
         }
 
-        if (robot.frontLeg.getCurrentPosition() < 0 && frontLegPower <= 0) {
-            frontLegPower = 0;
+        if (!gamepad1.left_bumper) {
+            released = true;
         }
-        */
 
         if (gamepad2.a) {
             robot.frontIntake.setPower(-0.9);
@@ -100,12 +113,20 @@ public class POVTeleOp extends OpMode{
         robot.rightBackDrive.setPower(rightPower);
         robot.armMotor.setPower(armPower);
 
-        robot.frontLeg.setPower(frontLegPower);
-        robot.backLeg.setPower(backLegPower);
+        if (centering) {
+            if (centerLegs.run() != 0) {
+                centering = false;
+                centerLegs.actionEnd();
+            }
+        } else {
+            robot.frontLeg.setPower(frontLegPower);
+            robot.backLeg.setPower(backLegPower);
+        }
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "drive (%.2f), turn (%.2f)", drive, turn);
+        telemetry.addData("Centering", centering);
     }
 
     @Override

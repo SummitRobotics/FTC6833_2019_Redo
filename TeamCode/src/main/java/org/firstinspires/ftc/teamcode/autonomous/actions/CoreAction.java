@@ -8,15 +8,18 @@ import org.firstinspires.ftc.teamcode.main.Hardware;
 // Interface to create new action classes
 public abstract class CoreAction {
 
-    Hardware robot = new Hardware();
-    public int nextPos = -1;
+    Hardware robot;
+    ElapsedTime runtime;
+    Telemetry telemetry;
+    int nextPos = -1;
 
     /**
-     * Method to run once at start of action use
-     * @param hardwareMap For using hardware within actions
-     * @param runtime For using runtime within actions
+     *
+     * @param robot the robot
+     * @param runtime the time
+     * @param telemetry the telemetry
      */
-    public abstract void actionInit(HardwareMap hardwareMap, ElapsedTime runtime);
+    public abstract void actionInit(Hardware robot, ElapsedTime runtime, Telemetry telemetry);
 
     /**
      * Method to be called until action is complete
