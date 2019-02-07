@@ -52,6 +52,8 @@ public class SampleDetection extends CoreAction {
 
     @Override
     public int run() {
+        telemetry.addData("SampleDetection", "Trying...");
+        telemetry.update();
         if (tfod != null) {
             // getUpdatedRecognitions() will return null if no new information is available since
             // the last time that call was made.
@@ -77,12 +79,17 @@ public class SampleDetection extends CoreAction {
 
                     // Complete actions based on mineral positions
                     if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-
                         if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                            telemetry.addData("SampleDetection", "Left");
+                            telemetry.update();
                             return nextPos1; //Left
                         } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                            telemetry.addData("SampleDetection", "Right");
+                            telemetry.update();
                             return nextPos3; //Right
                         } else {
+                            telemetry.addData("SampleDetection", "Center");
+                            telemetry.update();
                             return nextPos2; //Center
                         }
                     }
@@ -91,6 +98,8 @@ public class SampleDetection extends CoreAction {
         }
 
         if (runtime.seconds() - start > 5) {
+            telemetry.addData("SampleDetection", "Failed");
+            telemetry.update();
             return nextPos;
         }
 

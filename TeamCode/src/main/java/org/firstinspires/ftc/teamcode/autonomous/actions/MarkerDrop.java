@@ -1,17 +1,17 @@
 package org.firstinspires.ftc.teamcode.autonomous.actions;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.main.Hardware;
 
-public class IntakeControl extends CoreAction {
+public class MarkerDrop extends CoreAction {
 
-    private int power;
+    private double pos;
+    private double start;
 
-    public IntakeControl(int power, int nextPos) {
+    public MarkerDrop(double pos, int nextPos) {
 
-        this.power = power;
+        this.pos = pos;
         this.nextPos = nextPos;
     }
 
@@ -20,14 +20,19 @@ public class IntakeControl extends CoreAction {
         this.robot = robot;
         this.runtime = runtime;
         this.telemetry = telemetry;
+
+        this.start = runtime.seconds();
     }
 
     @Override
     public int run() {
-        robot.frontIntake.setPower(power);
-        robot.backIntake.setPower(-power);
+        robot.markerServo.setPosition(pos);
 
-        return nextPos;
+        if (runtime.seconds() - start > 0.5) {
+            return nextPos;
+        }
+
+        return 0;
     }
 
     @Override

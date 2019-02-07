@@ -16,26 +16,27 @@ public class Hardware {
     public DcMotor frontLeg;
     public DcMotor backLeg;
     public DcMotor armMotor;
-    public CRServo frontIntake;
-    public CRServo backIntake;
+    public Servo markerServo;
     public DigitalChannel frontLimit;
     public DigitalChannel backLimit;
 
     // Prepare variables for encoder use
     // http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
-    private final int HD_HEX_REV_COUNTS = 1120; // 1120 for 40:1, 560 for 20:1
+    private final int HD_HEX_REV_COUNTS40to1 = 1120; // 1120 for 40:1, 560 for 20:1
+    private final int HD_HEX_REV_COUNTS20to1 = 560; // 1120 for 40:1, 560 for 20:1
+
     private final double DRIVE_GEAR_RATIO = 15.0/20.0; // WheelGear / MotorGear
     private final double WHEEL_CIRCUMFERENCE = 3.5 * Math.PI;
     public final double ROBOT_WIDTH = 17;
 
-    public final int DRIVE_COUNTS_PER_INCH = (int) (HD_HEX_REV_COUNTS * DRIVE_GEAR_RATIO /
+    public final int DRIVE_COUNTS_PER_INCH = (int) (HD_HEX_REV_COUNTS20to1 * DRIVE_GEAR_RATIO /
             WHEEL_CIRCUMFERENCE);
 
     public final int DRIVE_COUNTS_PER_ROT = (int) -(ROBOT_WIDTH * Math.PI  * DRIVE_COUNTS_PER_INCH);
 
     private final double HEX_CORE_REV_COUNTS = 288;
     private final double LEG_GEAR_RATIO = (16.0 * 48.0) / 30.0;
-    public final double LEG_COUNTS_PER_ROT = (HD_HEX_REV_COUNTS * LEG_GEAR_RATIO);
+    public final int LEG_COUNTS_PER_ROT = (int) (HD_HEX_REV_COUNTS40to1 * LEG_GEAR_RATIO);
 
     // Local opmode hardware map
     public HardwareMap hardwareMap = null;
@@ -55,17 +56,16 @@ public class Hardware {
         frontLeg = this.hardwareMap.get(DcMotor.class, "frontLeg");
         backLeg = this.hardwareMap.get(DcMotor.class, "backLeg");
         armMotor = this.hardwareMap.get(DcMotor.class, "armMotor");
-        frontIntake = this.hardwareMap.get(CRServo.class, "frontIntake");
-        backIntake = this.hardwareMap.get(CRServo.class, "backIntake");
-        frontLimit = hardwareMap.get(DigitalChannel.class, "frontLimit");
-        backLimit = hardwareMap.get(DigitalChannel.class, "backLimit");
+        markerServo = this.hardwareMap.get(Servo.class, "markerServo");
+        frontLimit = this.hardwareMap.get(DigitalChannel.class, "frontLimit");
+        backLimit = this.hardwareMap.get(DigitalChannel.class, "backLimit");
 
 
         // Reverse the motor that runs backwards, set servo positions.
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         armMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeg.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeg.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

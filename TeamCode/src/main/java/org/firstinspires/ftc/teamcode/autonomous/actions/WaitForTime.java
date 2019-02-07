@@ -30,6 +30,8 @@ public class WaitForTime extends CoreAction {
             return nextPos;
         }
 
+        telemetry.addData("WaitForTime", "(%.2f) seconds remaining", time + (start - runtime.seconds()));
+        telemetry.update();
         return 0;
     }
 

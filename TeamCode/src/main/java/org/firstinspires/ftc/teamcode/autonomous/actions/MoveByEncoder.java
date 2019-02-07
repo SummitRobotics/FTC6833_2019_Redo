@@ -9,8 +9,7 @@ import org.firstinspires.ftc.teamcode.main.Hardware;
 public class MoveByEncoder extends CoreAction {
 
     private double leftSpeed, rightSpeed, leftDistance, rightDistance;
-    private int nextPos;
-    private ElapsedTime runtime;
+    private int leftFrontTarget, rightFrontTarget, leftBackTarget, rightBackTarget;
 
     public MoveByEncoder(double distance, double speed, int nextPos) {
 
@@ -52,26 +51,23 @@ public class MoveByEncoder extends CoreAction {
         this.telemetry = telemetry;
 
         // Prepare motors for encoder movement
-        int leftTarget  = robot.leftFrontDrive .getCurrentPosition()+(int)(leftDistance  * robot.DRIVE_COUNTS_PER_INCH);
-        int rightTarget = robot.rightFrontDrive.getCurrentPosition()+(int)(rightDistance * robot.DRIVE_COUNTS_PER_INCH);
+        leftFrontTarget  = robot.leftFrontDrive .getCurrentPosition()+(int)(leftDistance  * robot.DRIVE_COUNTS_PER_INCH);
+        rightFrontTarget = robot.rightFrontDrive.getCurrentPosition()+(int)(rightDistance * robot.DRIVE_COUNTS_PER_INCH);
+        leftBackTarget  = robot.leftBackDrive .getCurrentPosition()+(int)(leftDistance  * robot.DRIVE_COUNTS_PER_INCH);
+        rightBackTarget = robot.rightBackDrive.getCurrentPosition()+(int)(rightDistance * robot.DRIVE_COUNTS_PER_INCH);
 
-        if ((leftTarget > robot.leftFrontDrive.getCurrentPosition() && leftSpeed < 0) ||
-                (leftTarget < robot.rightFrontDrive.getCurrentPosition() && leftSpeed > 0)) {
-            leftSpeed *= -1;
-        }
-
-        if ((rightTarget > robot.rightFrontDrive.getCurrentPosition() && rightSpeed < 0) ||
-                (rightTarget < robot.rightFrontDrive.getCurrentPosition() && rightSpeed > 0)) {
-            rightSpeed *= -1;
-        }
 
         // Turn On RUN_TO_POSITION
         robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Set target positions
-        robot.leftFrontDrive.setTargetPosition(leftTarget);
-        robot.rightFrontDrive.setTargetPosition(rightTarget);
+        robot.leftFrontDrive.setTargetPosition(leftFrontTarget);
+        robot.rightFrontDrive.setTargetPosition(rightFrontTarget);
+        robot.leftBackDrive.setTargetPosition(leftBackTarget);
+        robot.rightBackDrive.setTargetPosition(rightBackTarget);
     }
 
     @Override
@@ -86,10 +82,17 @@ public class MoveByEncoder extends CoreAction {
                 rightSpeed = 0;
             }
 
+            if (leftSpeed == 0 && rightSpeed == 0) {
+                return nextPos;
+            }
+
             robot.leftFrontDrive.setPower(leftSpeed);
             robot.rightFrontDrive.setPower(rightSpeed);
             robot.leftBackDrive.setPower(leftSpeed);
             robot.rightBackDrive.setPower(rightSpeed);
+            telemetry.addData("MoveByEncoder At", "Left: (%.2f), Right: (%.2f)", (double) robot.leftFrontDrive.getCurrentPosition(), (double) robot.rightFrontDrive.getCurrentPosition());
+            telemetry.addData("MoveByEncoder To", "Left: (%.2f), Right: (%.2f)", (double) leftFrontTarget, (double) rightFrontTarget);
+            telemetry.update();
             return 0;
 
         }
@@ -107,5 +110,7 @@ public class MoveByEncoder extends CoreAction {
 
         robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

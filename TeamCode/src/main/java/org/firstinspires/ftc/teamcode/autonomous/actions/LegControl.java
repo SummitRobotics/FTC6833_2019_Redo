@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.main.Hardware;
 public class LegControl extends CoreAction {
 
     private double frontSpeed, backSpeed, frontPos, backPos;
+    private int frontTarget, backTarget;
 
 
     public LegControl(double frontPos, double backPos, double frontSpeed, double backSpeed, int nextPos) {
@@ -28,18 +29,8 @@ public class LegControl extends CoreAction {
         this.telemetry = telemetry;
 
         // Prepare motors for encoder movement
-        int frontTarget = (int)(frontPos * robot.LEG_COUNTS_PER_ROT) - robot.frontLeg.getCurrentPosition();
-        int backTarget  = (int)(backPos  * robot.LEG_COUNTS_PER_ROT) - robot.backLeg .getCurrentPosition();
-
-        if ((frontTarget > robot.frontLeg.getCurrentPosition() && frontSpeed < 0) ||
-                (frontTarget < robot.frontLeg.getCurrentPosition() && frontSpeed > 0)) {
-            frontSpeed *= -1;
-        }
-
-        if ((backTarget > robot.backLeg.getCurrentPosition() && backSpeed < 0) ||
-                (backTarget < robot.backLeg.getCurrentPosition() && backSpeed > 0)) {
-            backSpeed *= -1;
-        }
+        frontTarget = (int) (robot.frontLeg.getCurrentPosition() - (frontPos * robot.LEG_COUNTS_PER_ROT));
+        backTarget  = (int) (robot.backLeg .getCurrentPosition() - (backPos  * robot.LEG_COUNTS_PER_ROT));
 
         // Turn On RUN_TO_POSITION
         robot.frontLeg.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -52,18 +43,26 @@ public class LegControl extends CoreAction {
     @Override
     public int run() {
         // Set motor power until finished
-        if ((robot.frontLeg.isBusy() || robot.backLeg.isBusy())
-                && (!robot.atLimit(robot.frontLimit) || !robot.atLimit(robot.backLimit))) {
-            if (!robot.frontLeg.isBusy() || robot.atLimit(robot.frontLimit)) {
+        if (robot.frontLeg.isBusy() || robot.backLeg.isBusy()) {
+            if (!robot.frontLeg.isBusy()) {
                 frontSpeed = 0;
             }
 
-            if (!robot.backLeg.isBusy() || robot.atLimit(robot.backLimit)) {
+            if (!robot.backLeg.isBusy()) {
                 backSpeed = 0;
+            }
+
+            if (frontSpeed == 0 && backSpeed == 0) {
+                return nextPos;
             }
 
             robot.backLeg.setPower(backSpeed);
             robot.frontLeg.setPower(frontSpeed);
+            telemetry.addData("LegsControl Status", "Front Done: " + !robot.frontLeg.isBusy() + ", Back Done: " + !robot.backLeg.isBusy());
+            telemetry.addData("LegsControl At", "Front: (%.2f), Back: (%.2f)", (double)robot.frontLeg.getCurrentPosition(), (double)robot.backLeg.getCurrentPosition());
+            telemetry.addData("LegsControl To", "Front: (%.2f), Back: (%.2f)", (double)frontTarget, (double)backTarget);
+            telemetry.update();
+
             return 0;
 
         }

@@ -13,9 +13,11 @@ public class POVTeleOp extends OpMode{
 
     private Hardware robot = new Hardware();
     private ElapsedTime runtime = new ElapsedTime();
-    private LegControl centerLegs = new LegControl(0, 0, 1, 1, 1);
+    private LegControl centerLegs;
     private boolean centering = false;
     private boolean released = true;
+
+    private int highLimit = 0;
 
     @Override
     public void init() {
@@ -71,21 +73,26 @@ public class POVTeleOp extends OpMode{
         }
 
         //zero is a placeholder integer until the correct value can be calculated
+        if (!gamepad1.a) {
+            if (robot.backLeg.getCurrentPosition() > highLimit && backLegPower >= 0) {
+                backLegPower = 0;
+            }
 
-//        if (robot.backLeg.getCurrentPosition() > 0 && backLegPower >= 0) {
-//            backLegPower = 0;
-//        }
-//
-//        if (robot.frontLeg.getCurrentPosition() < 0 && frontLegPower <= 0) {
-//            frontLegPower = 0;
-//        }
+            if (robot.frontLeg.getCurrentPosition() > highLimit && frontLegPower >= 0) {
+                frontLegPower = 0;
+            }
+        } else {
+            highLimit = robot.backLeg.getCurrentPosition();
+        }
 
         if (gamepad1.left_bumper && released) {
             released = false;
             if (centering) {
                 centerLegs.actionEnd();
+                centerLegs = null;
                 centering = false;
             } else {
+                centerLegs = new LegControl(0, 0, 1, 1, 1);
                 centerLegs.actionInit(robot, runtime, telemetry);
                 centering = true;
             }
@@ -93,17 +100,6 @@ public class POVTeleOp extends OpMode{
 
         if (!gamepad1.left_bumper) {
             released = true;
-        }
-
-        if (gamepad2.a) {
-            robot.frontIntake.setPower(-0.9);
-            robot.backIntake.setPower(0.9);
-        } else if (gamepad2.b) {
-            robot.frontIntake.setPower(0.9);
-            robot.backIntake.setPower(-0.9);
-        } else {
-            robot.frontIntake.setPower(0.0);
-            robot.backIntake.setPower(0.0);
         }
 
         // Send calculated power to hardware
@@ -117,6 +113,7 @@ public class POVTeleOp extends OpMode{
             if (centerLegs.run() != 0) {
                 centering = false;
                 centerLegs.actionEnd();
+                centerLegs = null;
             }
         } else {
             robot.frontLeg.setPower(frontLegPower);
