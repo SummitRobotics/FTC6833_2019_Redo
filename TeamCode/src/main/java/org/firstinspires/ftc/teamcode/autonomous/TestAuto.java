@@ -2,10 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.autonomous.actions.CoreAction;
-import org.firstinspires.ftc.teamcode.autonomous.actions.LegControl;
-import org.firstinspires.ftc.teamcode.autonomous.actions.MarkerDrop;
 import org.firstinspires.ftc.teamcode.autonomous.actions.MoveByEncoder;
-import org.firstinspires.ftc.teamcode.autonomous.actions.WaitForTime;
 
 import java.util.ArrayList;
 

@@ -16,7 +16,6 @@ public class Hardware {
     public DcMotor frontLeg;
     public DcMotor backLeg;
     public DcMotor armMotor;
-    public Servo markerServo;
     public DigitalChannel frontLimit;
     public DigitalChannel backLimit;
 
@@ -38,6 +37,9 @@ public class Hardware {
     private final double LEG_GEAR_RATIO = (16.0 * 48.0) / 30.0;
     public final int LEG_COUNTS_PER_ROT = (int) (HD_HEX_REV_COUNTS40to1 * LEG_GEAR_RATIO);
 
+    private final double ARM_GEAR_RATIO = 16.0/1.0;
+    public final int ARM_COUNTS_PER_ROT = (int) (HD_HEX_REV_COUNTS40to1 * ARM_GEAR_RATIO);
+
     // Local opmode hardware map
     public HardwareMap hardwareMap = null;
 
@@ -56,7 +58,6 @@ public class Hardware {
         frontLeg = this.hardwareMap.get(DcMotor.class, "frontLeg");
         backLeg = this.hardwareMap.get(DcMotor.class, "backLeg");
         armMotor = this.hardwareMap.get(DcMotor.class, "armMotor");
-        markerServo = this.hardwareMap.get(Servo.class, "markerServo");
         frontLimit = this.hardwareMap.get(DigitalChannel.class, "frontLimit");
         backLimit = this.hardwareMap.get(DigitalChannel.class, "backLimit");
 
@@ -71,9 +72,5 @@ public class Hardware {
         backLeg.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLimit.setMode(DigitalChannel.Mode.INPUT);
         backLimit.setMode(DigitalChannel.Mode.INPUT);
-    }
-
-    public boolean atLimit(DigitalChannel limit) {
-        return !limit.getState();
     }
 }
