@@ -23,7 +23,7 @@ public class CraterSideAuto extends CoreAuto {
         path.add(new MoveByEncoder(6, 0.25, 1));
         path.add(new LegControl(0, 0.17, 0, 1, 1));
         //path.add(new MoveByEncoder(3, 0.25 , 1));
-        path.add(new WaitForTime(0.3, 1));
+        path.add(new WaitForTime(0.1, 1));
         path.add(new SampleDetection(1, 9, 16));
 
         // Left path
@@ -39,14 +39,14 @@ public class CraterSideAuto extends CoreAuto {
         path.add(new MoveByEncoder(-80, 0.2, END));
 
         // Center path
-        //path.add(new MoveByEncoder(-3, 0.2, 1));
+        path.add(new MoveByEncoder(-3, 0.2, 1));
         path.add(new LegControl(0, -0.17, 0, 1, 1));
         path.add(new MoveByEncoder(-13, 0.25, 1));
         path.add(new MoveByEncoder(3,0.25,1));
-        path.add(new MoveByEncoder(23, -23, 0.2,  0.2, 1));
-        path.add(new MoveByEncoder(35, 0.25, 1));
-        path.add(new MoveByEncoder(-10, 10, 0.25, 1));
-        path.add(new MoveByEncoder(40,0.25,1));
+        path.add(new MoveByEncoder(24, -24, 0.2,  0.2, 1));
+        path.add(new MoveByEncoder(28, 0.25, 1));
+        path.add(new MoveByEncoder(-12, 12, 0.25, 1));
+        path.add(new MoveByEncoder(58,0.25,1));
 
         path.add(new ArmControl(0.25, 0.5, 1));
 
