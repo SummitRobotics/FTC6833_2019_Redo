@@ -29,10 +29,10 @@ public class DepotSideAuto extends CoreAuto {
 
         // Left path
         path.add(new LegControl(0, -0.21, 0, 1, 1));
-        path.add(new MoveByEncoder(-4, 4, 0.2,  0.2, 1));
-        path.add(new MoveByEncoder(-40, 0.2, 1));
-        path.add(new MoveByEncoder(13, -13, 0.2,  0.2, 1));
-        path.add(new MoveByEncoder(-50, 0.2, END));
+        path.add(new MoveByEncoder(-4, 4, 0.2,  0.2, END));
+     //   path.add(new MoveByEncoder(-40, 0.2, 1));
+     //   path.add(new MoveByEncoder(13, -13, 0.2,  0.2, 1));
+     //   path.add(new MoveByEncoder(-50, 0.2, END));
 
 
 //        //twitch control
@@ -55,10 +55,10 @@ public class DepotSideAuto extends CoreAuto {
 
         // Right Path
         path.add(new LegControl(0, -0.21, 0, 1, 1));
-        path.add(new MoveByEncoder(4, -4, 0.2,  0.2, 1));
-        path.add(new MoveByEncoder(-40, 0.2, 1));
-        path.add(new MoveByEncoder(-13, 13, 0.2,  0.2, 1));
-        path.add(new MoveByEncoder(-50, 0.2, 1));
+        path.add(new MoveByEncoder(4, -4, 0.2,  0.2, END));
+     //   path.add(new MoveByEncoder(-40, 0.2, 1));
+     //   path.add(new MoveByEncoder(-13, 13, 0.2,  0.2, 1));
+     //   path.add(new MoveByEncoder(-50, 0.2, 1));
 
 //        //twitch control
 //        path.add(new ArmControl(0.05, 1, 1));
