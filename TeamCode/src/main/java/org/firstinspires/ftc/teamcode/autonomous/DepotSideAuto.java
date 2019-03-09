@@ -19,42 +19,42 @@ public class DepotSideAuto extends CoreAuto {
 
     @Override
     public void runOpMode() {
-        //path.add(new LegControl(0.53, -0.47, 1, 1,1));
+        path.add(new LegControl(0.53, -0.47, 1, 1,1));
         //front/backPos controls legs rotation
-        //path.add(new MoveByEncoder(10, 0.4, 1));
+        path.add(new MoveByEncoder(10, 0.4, 1));
         //dist in inches
-        //path.add(new LegControl(0, 0.21, 0, 1, 1));
+        path.add(new LegControl(0, 0.21, 0, 1, 1));
         path.add(new SampleDetection(1, 6, 9));
         //left, center, right
 
         // Left path
-        //path.add(new LegControl(0, -0.21, 0, 1, 1));
+        path.add(new LegControl(0, -0.21, 0, 1, 1));
         path.add(new MoveByEncoder(-4, 4, 0.2,  0.2, 1));
         path.add(new MoveByEncoder(-40, 0.2, 1));
         path.add(new MoveByEncoder(13, -13, 0.2,  0.2, 1));
-        path.add(new MoveByEncoder(-50, 0.2, 1));
+        path.add(new MoveByEncoder(-50, 0.2, END));
+
 
 //        //twitch control
 //        path.add(new ArmControl(0.05, 1, 1));
 //        path.add(new ArmControl(-0.05, 1, 1));
 //        path.add(new ArmControl(0.05, 1, 1));
 //        path.add(new ArmControl(-0.05, 1, 1));
-        path.add(new MoveByEncoder(75, 0.2, END));
+//        path.add(new MoveByEncoder(75, 0.2, END));
 
         // Center path
-        //path.add(new LegControl(0, -0.21, 0, 1, 1));
-        path.add(new MoveByEncoder(-58, 0.2, 1));
-
+        path.add(new LegControl(0, -0.21, 0, 1, 1));
+        path.add(new MoveByEncoder(-58, 0.2, END));
 //        path.add(new ArmControl(0.05, 1, 1));
 //        path.add(new ArmControl(-0.05, 1, 1));
 //        path.add(new ArmControl(0.05, 1, 1));
 //        path.add(new ArmControl(-0.05, 1, 1));
 
-        path.add(new MoveByEncoder(-12, 12, 0.2,  0.2, 1));
-        path.add(new MoveByEncoder(75, 0.2, END));
+//        path.add(new MoveByEncoder(-12, 12, 0.2,  0.2, 1));
+//        path.add(new MoveByEncoder(75, 0.2, END));
 
         // Right Path
-        //path.add(new LegControl(0, -0.21, 0, 1, 1));
+        path.add(new LegControl(0, -0.21, 0, 1, 1));
         path.add(new MoveByEncoder(4, -4, 0.2,  0.2, 1));
         path.add(new MoveByEncoder(-40, 0.2, 1));
         path.add(new MoveByEncoder(-13, 13, 0.2,  0.2, 1));
