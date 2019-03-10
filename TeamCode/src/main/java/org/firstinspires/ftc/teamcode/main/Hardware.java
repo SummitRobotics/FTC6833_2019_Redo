@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.main;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -18,6 +19,7 @@ public class Hardware {
     public DcMotor armMotor;
     public DigitalChannel frontLimit;
     public DigitalChannel backLimit;
+    public BNO055IMU gyro;
 
     // Prepare variables for encoder use
     // http://www.revrobotics.com/content/docs/Encoder-Guide.pdf
@@ -60,6 +62,7 @@ public class Hardware {
         armMotor = this.hardwareMap.get(DcMotor.class, "armMotor");
         frontLimit = this.hardwareMap.get(DigitalChannel.class, "frontLimit");
         backLimit = this.hardwareMap.get(DigitalChannel.class, "backLimit");
+        gyro = this.hardwareMap.get(BNO055IMU.class, "imu");
 
 
         // Reverse the motor that runs backwards, set servo positions.

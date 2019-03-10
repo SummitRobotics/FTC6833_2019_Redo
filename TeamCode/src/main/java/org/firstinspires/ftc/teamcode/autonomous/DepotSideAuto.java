@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.autonomous.actions.AlignByGyro;
 import org.firstinspires.ftc.teamcode.autonomous.actions.ArmControl;
+import org.firstinspires.ftc.teamcode.autonomous.actions.CalabrateGyro;
 import org.firstinspires.ftc.teamcode.autonomous.actions.CoreAction;
 import org.firstinspires.ftc.teamcode.autonomous.actions.LegControl;
 import org.firstinspires.ftc.teamcode.autonomous.actions.MoveByEncoder;
@@ -16,12 +19,18 @@ public class DepotSideAuto extends CoreAuto {
 
     //Initializes action list
     private ArrayList<CoreAction> path = new ArrayList<>();
+    // makes a verible to be used for gyroscope calabration
+    public Orientation firstAngle = new Orientation();
 
     @Override
     public void runOpMode() {
+        path.add(new CalabrateGyro(1, firstAngle));
         path.add(new LegControl(0.53, -0.47, 1, 1,1));
         //front/backPos controls legs rotation
         path.add(new MoveByEncoder(10, 0.4, 1));
+
+        path.add(new AlignByGyro(1,firstAngle));
+
         //dist in inches
         path.add(new LegControl(0, 0.21, 0, 1, 1));
         path.add(new SampleDetection(1, 6, 9));
