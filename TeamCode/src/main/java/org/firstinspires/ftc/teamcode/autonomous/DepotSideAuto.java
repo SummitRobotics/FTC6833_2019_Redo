@@ -59,7 +59,7 @@ public class DepotSideAuto extends CoreAuto {
         path.add(new MoveByEncoder(-18,18,0.2, 1));
         path.add(new ArmControl(.2, 1, 1));
         path.add(new ArmControl(-.18, 1, 1));
-        path.add(new LegControl(0,0.15,1,1,1));
+        path.add(new LegControl(0.15,0.05,1,1,1));
         path.add(new MoveByEncoder(-75,.15,END));
 
 
