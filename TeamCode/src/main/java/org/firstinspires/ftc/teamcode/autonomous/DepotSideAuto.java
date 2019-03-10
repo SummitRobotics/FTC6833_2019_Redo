@@ -24,12 +24,12 @@ public class DepotSideAuto extends CoreAuto {
 
     @Override
     public void runOpMode() {
-        path.add(new CalabrateGyro(1, firstAngle));
+        //path.add(new CalabrateGyro(1, firstAngle));
         path.add(new LegControl(0.53, -0.47, 1, 1,1));
         //front/backPos controls legs rotation
         path.add(new MoveByEncoder(10, 0.4, 1));
 
-        path.add(new AlignByGyro(1,firstAngle));
+        //path.add(new AlignByGyro(1,firstAngle));
 
         //dist in inches
         path.add(new LegControl(0, 0.21, 0, 1, 1));
