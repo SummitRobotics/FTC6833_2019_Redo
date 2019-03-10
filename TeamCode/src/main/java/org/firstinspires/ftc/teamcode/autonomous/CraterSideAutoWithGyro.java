@@ -24,10 +24,10 @@ public class CraterSideAutoWithGyro extends CoreAuto {
     @Override
     public void runOpMode() {
         path.add(new CalabrateGyro(1,firstAngle));
-        path.add(new LegControl(0.55, -0.45, 1, 1,1));
-        path.add(new MoveByEncoder(6, 0.25, 1));
-        path.add(new LegControl(0, 0.17, 0, 1, 1));
-        //path.add(new MoveByEncoder(3, 0.25 , 1));
+        //path.add(new LegControl(0.55, -0.45, 1, 1,1));
+        //path.add(new MoveByEncoder(6, 0.25, 1));
+        //path.add(new LegControl(0, 0.17, 0, 1, 1));
+        path.add(new WaitForTime(5,1));
         path.add(new AlignByGyro(1,firstAngle));
         path.add(new WaitForTime(0.1, 1));
         path.add(new SampleDetection(1, 3, 7));
@@ -46,8 +46,9 @@ public class CraterSideAutoWithGyro extends CoreAuto {
 
         // Center path
         path.add(new LegControl(0, -0.17, 0, 1, 1));
-        path.add(new MoveByEncoder(-3, 0.25, 1));
-        path.add(new MoveByEncoder(3,0.25,END));
+        path.add(new MoveByEncoder(-13,.25,1));
+        path.add(new MoveByEncoder(-4, 0.25, 1));
+        path.add(new MoveByEncoder(4,0.25,END));
         //path.add(new MoveByEncoder(24, -24, 0.2,  0.2, 1));
        // path.add(new MoveByEncoder(28, 0.25, 1));
        // path.add(new MoveByEncoder(-12, 12, 0.25, 1));

@@ -31,7 +31,7 @@ public class CraterSideAuto extends CoreAuto {
         //path.add(new MoveByEncoder(3, 0.25 , 1));
        // path.add(new AlignByGyro(1,firstAngle));
         path.add(new WaitForTime(0.1, 1));
-        path.add(new SampleDetection(1, 3, 6));
+        path.add(new SampleDetection(1, 3, 7));
 
         // Left path
         path.add(new LegControl(0, -0.17, 0, 1, 1));

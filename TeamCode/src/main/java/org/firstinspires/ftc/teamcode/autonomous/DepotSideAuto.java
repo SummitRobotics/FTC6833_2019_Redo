@@ -24,19 +24,20 @@ public class DepotSideAuto extends CoreAuto {
 
     @Override
     public void runOpMode() {
-        //path.add(new CalabrateGyro(1, firstAngle));
+
         path.add(new LegControl(0.53, -0.47, 1, 1,1));
         //front/backPos controls legs rotation
         path.add(new MoveByEncoder(10, 0.4, 1));
 
-        //path.add(new AlignByGyro(1,firstAngle));
+
 
         //dist in inches
-        path.add(new LegControl(0, 0.21, 0, 1, 1));
-        path.add(new SampleDetection(1, 6, 9));
+        //path.add(new LegControl(0, 0.21, 0, 1, 1));
+        //path.add(new SampleDetection(1, 6, 9));
         //left, center, right
 
         // Left path
+        /*
         path.add(new LegControl(0, -0.21, 0, 1, 1));
         path.add(new MoveByEncoder(-4, 4, 0.2,  0.2, END));
      //   path.add(new MoveByEncoder(-40, 0.2, 1));
@@ -50,19 +51,23 @@ public class DepotSideAuto extends CoreAuto {
 //        path.add(new ArmControl(0.05, 1, 1));
 //        path.add(new ArmControl(-0.05, 1, 1));
 //        path.add(new MoveByEncoder(75, 0.2, END));
-
+        */
         // Center path
-        path.add(new LegControl(0, -0.21, 0, 1, 1));
-        path.add(new MoveByEncoder(-58, 0.2, END));
-//        path.add(new ArmControl(0.05, 1, 1));
-//        path.add(new ArmControl(-0.05, 1, 1));
-//        path.add(new ArmControl(0.05, 1, 1));
-//        path.add(new ArmControl(-0.05, 1, 1));
+        //path.add(new LegControl(0, -0.21, 0, 1, 1));
+        path.add(new MoveByEncoder(-50, 0.2, 1));
+       // path.add(new ArmControl(.16, 1, 1));
+        path.add(new MoveByEncoder(-18,18,0.2, 1));
+        path.add(new ArmControl(.2, 1, 1));
+        path.add(new ArmControl(-.18, 1, 1));
+        path.add(new LegControl(0,0.15,1,1,1));
+        path.add(new MoveByEncoder(-75,.15,END));
 
-//        path.add(new MoveByEncoder(-12, 12, 0.2,  0.2, 1));
-//        path.add(new MoveByEncoder(75, 0.2, END));
+
+        //path.add(new MoveByEncoder(-12, 12, 0.2,  0.2, END));
+        //path.add(new MoveByEncoder(75, 0.2, END));
 
         // Right Path
+        /*
         path.add(new LegControl(0, -0.21, 0, 1, 1));
         path.add(new MoveByEncoder(4, -4, 0.2,  0.2, END));
      //   path.add(new MoveByEncoder(-40, 0.2, 1));
@@ -76,7 +81,7 @@ public class DepotSideAuto extends CoreAuto {
 //        path.add(new ArmControl(-0.05, 1, 1));
 
         path.add(new MoveByEncoder(75, 0.2, END));
-
+        */
         // Update telemetry
         telemetry.addData("Status", "Initialized");
         telemetry.update();

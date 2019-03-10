@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.main.Hardware;
 // Class to move forward or turn
 public class AlignByGyro extends CoreAction {
 
-
     private Orientation firstAngle;
 
     public AlignByGyro(int nextPos, Orientation firstAngle) {
@@ -32,11 +31,16 @@ public class AlignByGyro extends CoreAction {
         this.telemetry = telemetry;
 
 
-        // Turn On RUN_TO_POSITION
+        // Turn On RUN_WITHOUT_ENCODER
         robot.leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        telemetry.addData("firstangle", firstAngle.secondAngle);
+        telemetry.addData("curentangle", robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle);
+        telemetry.update();
+
 
     }
 
@@ -48,13 +52,15 @@ public class AlignByGyro extends CoreAction {
 
 
 
-        if (-30 < robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle) {
+        if (firstAngle.secondAngle < robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle) {
 
-            while (-30 < robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle + 2) {
+            while (firstAngle.secondAngle < robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle) {
 
 
-                robot.leftFrontDrive.setPower(.8);
-                robot.rightBackDrive.setPower(-.8);
+                robot.leftFrontDrive.setPower(-.5);
+                robot.leftBackDrive.setPower(-.5);
+                robot.rightFrontDrive.setPower(.5);
+                robot.rightBackDrive.setPower(.5);
 
                 telemetry.addData("firstangle", firstAngle.secondAngle);
                 telemetry.addData("curentangle", robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle);
@@ -64,13 +70,15 @@ public class AlignByGyro extends CoreAction {
 
         }
 
-        if (30 < robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle) {
+        if (firstAngle.secondAngle > robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle) {
 
-            while (30 < robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle - 2) {
+            while (firstAngle.secondAngle > robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle) {
 
 
-                robot.leftFrontDrive.setPower(-.8);
-                robot.rightBackDrive.setPower(.8);
+                robot.leftFrontDrive.setPower(.5);
+                robot.leftBackDrive.setPower(.5);
+                robot.rightFrontDrive.setPower(-.5);
+                robot.rightBackDrive.setPower(-.5);
 
                 telemetry.addData("firstangle", firstAngle.secondAngle);
                 telemetry.addData("curentangle", robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).secondAngle);
