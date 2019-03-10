@@ -25,7 +25,7 @@ public class DepotSideAuto extends CoreAuto {
     @Override
     public void runOpMode() {
 
-        path.add(new LegControl(0.53, -0.47, 1, 1,1));
+        path.add(new LegControl(0.6, -0.47, 1, 1,1));
         //front/backPos controls legs rotation
         path.add(new MoveByEncoder(10, 0.4, 1));
 
@@ -56,14 +56,14 @@ public class DepotSideAuto extends CoreAuto {
         //path.add(new LegControl(0, -0.21, 0, 1, 1));
         path.add(new MoveByEncoder(-50, 0.2, 1));
        // path.add(new ArmControl(.16, 1, 1));
-        path.add(new MoveByEncoder(-18,18,0.2, 1));
+        path.add(new MoveByEncoder(-30,30,0.2, 1));
         path.add(new ArmControl(.2, 1, 1));
         path.add(new ArmControl(-.18, 1, 1));
         path.add(new LegControl(0.15,0.05,1,1,1));
         path.add(new MoveByEncoder(-75,.15,END));
 
 
-        //path.add(new MoveByEncoder(-12, 12, 0.2,  0.2, END));
+        //path.add(new MoveByEncoder(-12, 12, 0.2,  0.2, END));m
         //path.add(new MoveByEncoder(75, 0.2, END));
 
         // Right Path
